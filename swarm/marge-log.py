@@ -33,6 +33,25 @@ def get_marge_data():
     # print(json.dumps(all_checkins, ensure_ascii=False))
     return(all_checkins)
 
+def statistics(checkins):
+    data = {}
+    for checkin in checkins:
+        checkin_id = checkin['venue']['id']
+        if item := data.get(checkin_id):
+            item['count'] += 1
+            item['oldest'] = checkin['createdAt']
+        else:
+            data[checkin_id] = {
+                'count': 1,
+                'name': checkin['venue']['name'],
+                'latest': checkin['createdAt'],
+                'oldest': checkin['createdAt'],
+            }
+
+    return(data)
+
 if __name__ == "__main__":
     checkins = get_marge_data()
-    print(json.dumps(checkins, ensure_ascii=False))
+    data = statistics(checkins)
+    # print(json.dumps(checkins, ensure_ascii=False))
+    print(json.dumps(data, ensure_ascii=False))
