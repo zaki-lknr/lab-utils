@@ -48,7 +48,9 @@ def statistics(checkins):
                 'oldest': checkin['createdAt'],
             }
 
-    return(data)
+    # return(data)
+    sorted_data = dict(sorted(data.items(), key=lambda x: x[1]['count'], reverse=True))
+    return(sorted_data)
 
 if __name__ == "__main__":
     checkins = get_marge_data()
