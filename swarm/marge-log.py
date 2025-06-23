@@ -1,29 +1,25 @@
 import json
 import datetime
 
-files = [
-    'today.json',
-]
+new_data_file = 'today.json'
+stored_data_file = 'all-checkins.json'
 
 # print(files)
 
 all_checkins = []
-with open('all-checkins.json') as f:
+with open(stored_data_file) as f:
     all_checkins = json.load(f)
 
-for file in files:
-    # print(file)
+with open(new_data_file) as f:
+    d = json.load(f)
+    checkins = d['response']['checkins']['items']
 
-    with open(file) as f:
-        d = json.load(f)
-        checkins = d['response']['checkins']['items']
-
-        index = 0
-        for checkin in checkins:
-            if checkin['id'] not in (i['id'] for i in all_checkins):
-                all_checkins.insert(index, checkin)
-                index += 1
-                # fixme: 順序が逆になるのでtodayにallを足すようにする (か、ソート処理を組み込む)
+    index = 0
+    for checkin in checkins:
+        if checkin['id'] not in (i['id'] for i in all_checkins):
+            all_checkins.insert(index, checkin)
+            index += 1
+            # fixme: 順序が逆になるのでtodayにallを足すようにする (か、ソート処理を組み込む)
 
 # for c in all_checkins:
 #     print(c['id'] + ', ' + str(datetime.datetime.fromtimestamp(c['createdAt'])) + ', ' + c['venue']['name'])
