@@ -1,14 +1,15 @@
 import json
+import datetime
 
-base_path = '/path/to/'
 files = [
-    base_path + 'log-2.json',
-    base_path + 'log-1.json',
+    'today.json',
 ]
 
 # print(files)
 
 all_checkins = []
+with open('all-checkins.json') as f:
+    all_checkins = json.load(f)
 
 for file in files:
     # print(file)
@@ -17,11 +18,19 @@ for file in files:
         d = json.load(f)
         checkins = d['response']['checkins']['items']
 
+        index = 0
         for checkin in checkins:
             if checkin['id'] not in (i['id'] for i in all_checkins):
-                all_checkins.append(checkin)
+                all_checkins.insert(index, checkin)
+                index += 1
+                # fixme: 順序が逆になるのでtodayにallを足すようにする (か、ソート処理を組み込む)
 
 # for c in all_checkins:
-#     print(c['id'] + ', ' + c['venue']['name'])
+#     print(c['id'] + ', ' + str(datetime.datetime.fromtimestamp(c['createdAt'])) + ', ' + c['venue']['name'])
+#     z = datetime.datetime.fromtimestamp(c['createdAt'])
+#     zz = c['createdAt']
 
+# print(type(z))
+# print(zz)
+# print(str(z))
 print(json.dumps(all_checkins, ensure_ascii=False))
