@@ -35,14 +35,20 @@ def get_marge_data():
 
 def statistics(checkins):
     data = {}
+    expired = set()
     current_dt = datetime.datetime.now()
     limit_sec = int((current_dt + datetime.timedelta(days=-30)).timestamp())
 
     for checkin in checkins:
-        if (limit_sec > checkin['createdAt']):
-            break
         checkin_id = checkin['venue']['id']
-        if item := data.get(checkin_id):
+        item = data.get(checkin_id)
+        if (limit_sec > checkin['createdAt']):
+            # 期限切れ
+            if (not item):
+                expired.add(checkin['venue']['name'])
+            continue
+
+        if item:
             item['count'] += 1
             item['oldest'] = str(datetime.datetime.fromtimestamp(checkin['createdAt']))
             item['checkins'].append((datetime.datetime.fromtimestamp(checkin['createdAt'])).strftime('%m/%d'))
@@ -55,6 +61,8 @@ def statistics(checkins):
                 'checkins': [(datetime.datetime.fromtimestamp(checkin['createdAt'])).strftime('%m/%d')]
             }
 
+    print(json.dumps(list(expired), ensure_ascii=False))
+
     # return(data)
     sorted_data = dict(sorted(data.items(), key=lambda x: x[1]['count'], reverse=True))
     return(sorted_data)
@@ -63,4 +71,4 @@ if __name__ == "__main__":
     checkins = get_marge_data()
     data = statistics(checkins)
     # print(json.dumps(checkins, ensure_ascii=False))
-    print(json.dumps(data, ensure_ascii=False))
+    # print(json.dumps(data, ensure_ascii=False))
