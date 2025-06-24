@@ -35,7 +35,12 @@ def get_marge_data():
 
 def statistics(checkins):
     data = {}
+    current_dt = datetime.datetime.now()
+    limit_sec = int((current_dt + datetime.timedelta(days=-30)).timestamp())
+
     for checkin in checkins:
+        if (limit_sec > checkin['createdAt']):
+            break
         checkin_id = checkin['venue']['id']
         if item := data.get(checkin_id):
             item['count'] += 1
