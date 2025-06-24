@@ -45,12 +45,14 @@ def statistics(checkins):
         if item := data.get(checkin_id):
             item['count'] += 1
             item['oldest'] = str(datetime.datetime.fromtimestamp(checkin['createdAt']))
+            item['checkins'].append((datetime.datetime.fromtimestamp(checkin['createdAt'])).strftime('%m/%d'))
         else:
             data[checkin_id] = {
                 'count': 1,
                 'name': checkin['venue']['name'],
                 'latest': str(datetime.datetime.fromtimestamp(checkin['createdAt'])),
                 'oldest': str(datetime.datetime.fromtimestamp(checkin['createdAt'])),
+                'checkins': [(datetime.datetime.fromtimestamp(checkin['createdAt'])).strftime('%m/%d')]
             }
 
     # return(data)
