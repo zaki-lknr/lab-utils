@@ -44,6 +44,7 @@ def statistics(checkins):
 
     for checkin in checkins:
         checkin_id = checkin['venue']['id']
+        checkin_time = datetime.datetime.fromtimestamp(checkin['createdAt'])
         item = data['statistics'].get(checkin_id)
         if (limit_sec > checkin['createdAt']):
             # 期限切れ
@@ -53,17 +54,17 @@ def statistics(checkins):
 
         if item:
             item['count'] += 1
-            item['oldest'] = str(datetime.datetime.fromtimestamp(checkin['createdAt']))
-            item['checkins'].append((datetime.datetime.fromtimestamp(checkin['createdAt'])).strftime('%m/%d'))
+            item['oldest'] = str(checkin_time)
+            item['checkins'].append((checkin_time).strftime('%m/%d'))
         else:
-            diff = current_dt - datetime.datetime.fromtimestamp(checkin['createdAt'])
+            diff = current_dt - checkin_time
             data['statistics'][checkin_id] = {
                 'count': 1,
                 'name': checkin['venue']['name'],
-                'latest': str(datetime.datetime.fromtimestamp(checkin['createdAt'])),
+                'latest': str(checkin_time),
                 'passed': str(diff.days) + "d, " + str(int(diff.seconds / 60 / 60)) + "h",
-                'oldest': str(datetime.datetime.fromtimestamp(checkin['createdAt'])),
-                'checkins': [(datetime.datetime.fromtimestamp(checkin['createdAt'])).strftime('%m/%d')],
+                'oldest': str(checkin_time),
+                'checkins': [(checkin_time).strftime('%m/%d')],
             }
 
     data['statistics'] = dict(sorted(data['statistics'].items(), key=lambda x: x[1]['count'], reverse=True))
