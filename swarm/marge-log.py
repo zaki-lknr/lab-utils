@@ -56,12 +56,14 @@ def statistics(checkins):
             item['oldest'] = str(datetime.datetime.fromtimestamp(checkin['createdAt']))
             item['checkins'].append((datetime.datetime.fromtimestamp(checkin['createdAt'])).strftime('%m/%d'))
         else:
+            diff = current_dt - datetime.datetime.fromtimestamp(checkin['createdAt'])
             data['statistics'][checkin_id] = {
                 'count': 1,
                 'name': checkin['venue']['name'],
                 'latest': str(datetime.datetime.fromtimestamp(checkin['createdAt'])),
+                'passed': str(diff.days) + "d, " + str(int(diff.seconds / 60 / 60)) + "h",
                 'oldest': str(datetime.datetime.fromtimestamp(checkin['createdAt'])),
-                'checkins': [(datetime.datetime.fromtimestamp(checkin['createdAt'])).strftime('%m/%d')]
+                'checkins': [(datetime.datetime.fromtimestamp(checkin['createdAt'])).strftime('%m/%d')],
             }
 
     data['statistics'] = dict(sorted(data['statistics'].items(), key=lambda x: x[1]['count'], reverse=True))
