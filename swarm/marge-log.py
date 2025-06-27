@@ -34,18 +34,20 @@ def get_marge_data():
     return(all_checkins)
 
 def statistics(checkins):
-    data = {}
-    expired = set()
+    data = {
+        'statistics': {},
+        'expired': set(),
+    }
     current_dt = datetime.datetime.now()
     limit_sec = int((current_dt + datetime.timedelta(days=-30)).timestamp())
 
     for checkin in checkins:
         checkin_id = checkin['venue']['id']
-        item = data.get(checkin_id)
+        item = data['statistics'].get(checkin_id)
         if (limit_sec > checkin['createdAt']):
             # 期限切れ
             if (not item):
-                expired.add(checkin['venue']['name'])
+                data['expired'].add(checkin['venue']['name'])
             continue
 
         if item:
@@ -53,7 +55,7 @@ def statistics(checkins):
             item['oldest'] = str(datetime.datetime.fromtimestamp(checkin['createdAt']))
             item['checkins'].append((datetime.datetime.fromtimestamp(checkin['createdAt'])).strftime('%m/%d'))
         else:
-            data[checkin_id] = {
+            data['statistics'][checkin_id] = {
                 'count': 1,
                 'name': checkin['venue']['name'],
                 'latest': str(datetime.datetime.fromtimestamp(checkin['createdAt'])),
@@ -61,10 +63,10 @@ def statistics(checkins):
                 'checkins': [(datetime.datetime.fromtimestamp(checkin['createdAt'])).strftime('%m/%d')]
             }
 
-    print(json.dumps(list(expired), ensure_ascii=False))
+    print(json.dumps(list(data['expired']), ensure_ascii=False)) # 期限切れ一覧
 
     # return(data)
-    sorted_data = dict(sorted(data.items(), key=lambda x: x[1]['count'], reverse=True))
+    sorted_data = dict(sorted(data['statistics'].items(), key=lambda x: x[1]['count'], reverse=True))
     return(sorted_data)
 
 if __name__ == "__main__":
