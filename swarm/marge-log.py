@@ -52,18 +52,21 @@ def statistics(checkins):
                 expired_work.add(checkin['venue']['name'])
             continue
 
+        diff = current_dt - checkin_time
+        lost = str(int((checkin['createdAt'] - limit_sec) / 60 / 60)) + "h"
         if item:
             item['count'] += 1
             item['oldest'] = str(checkin_time)
+            item['lost'] = lost
             item['checkins'].append((checkin_time).strftime('%m/%d'))
         else:
-            diff = current_dt - checkin_time
             data['statistics'][checkin_id] = {
                 'count': 1,
                 'name': checkin['venue']['name'],
                 'latest': str(checkin_time),
                 'passed': str(diff.days) + "d, " + str(int(diff.seconds / 60 / 60)) + "h",
                 'oldest': str(checkin_time),
+                'lost': lost,
                 'checkins': [(checkin_time).strftime('%m/%d')],
             }
 
