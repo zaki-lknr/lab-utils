@@ -77,5 +77,7 @@ def statistics(checkins):
 if __name__ == "__main__":
     checkins = get_marge_data()
     data = statistics(checkins)
-    # print(json.dumps(checkins, ensure_ascii=False))
+    with open('./all-checkins-new.json', mode='w') as f:
+        f.write(json.dumps(checkins, ensure_ascii=False))
+
     print(json.dumps(data, ensure_ascii=False))
