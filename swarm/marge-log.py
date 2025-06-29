@@ -80,4 +80,5 @@ if __name__ == "__main__":
     with open('./all-checkins-new.json', mode='w') as f:
         f.write(json.dumps(checkins, ensure_ascii=False))
 
-    print(json.dumps(data, ensure_ascii=False))
+    with open('./stat.json', mode='w') as f:
+        f.write(json.dumps(data, ensure_ascii=False))
