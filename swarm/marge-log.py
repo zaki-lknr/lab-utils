@@ -1,17 +1,19 @@
 import json
 import datetime
 
+data_dir = 'logs/'
 new_data_file = 'today.json'
 stored_data_file = 'all-checkins.json'
-
+new_stored_data_file = 'all-checkins-current.json'
+statistics_file = 'stat.json'
 # print(files)
 
 def get_marge_data():
     all_checkins = []
-    with open(stored_data_file) as f:
+    with open(data_dir + stored_data_file) as f:
         all_checkins = json.load(f)
 
-    with open(new_data_file) as f:
+    with open(data_dir + new_data_file) as f:
         d = json.load(f)
         checkins = d['response']['checkins']['items']
 
@@ -77,8 +79,8 @@ def statistics(checkins):
 if __name__ == "__main__":
     checkins = get_marge_data()
     data = statistics(checkins)
-    with open('./all-checkins-new.json', mode='w') as f:
+    with open(data_dir + new_stored_data_file, mode='w') as f:
         f.write(json.dumps(checkins, ensure_ascii=False))
 
-    with open('./stat.json', mode='w') as f:
+    with open(data_dir + statistics_file, mode='w') as f:
         f.write(json.dumps(data, ensure_ascii=False))
