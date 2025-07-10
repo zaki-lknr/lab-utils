@@ -6,6 +6,7 @@ new_data_file = 'today.json'
 stored_data_file = 'all-checkins.json'
 new_stored_data_file = 'all-checkins-current.json'
 statistics_file = 'stat.json'
+threshold_file = 'threshold.json'
 # print(files)
 
 def get_data():
@@ -55,17 +56,33 @@ def statistics(checkins):
     data['statistics'] = dict(sorted(data['statistics'].items(), key=lambda x: x[1]['count'], reverse=True))
     data['expired'] = list(expired_work)
 
+    # 閾値データの読み込み
+    with open(threshold_file) as f:
+        threshold = json.load(f)
+    # print(threshold)
+
     # データサブセット
     stat = []
-    for item in data['statistics'].values():
+    for key, item in data['statistics'].items():
+        lost = int(item['lost'] / 24)
+        passed = int(item['passed'] / 24)
+        name = "(" + str(item['count']) + "/" + "pass:" + str(passed) + "/" + "lost:" + str(lost) + ") " + item['name']
         stat.append({
             'count': item['count'],
-            'name': "(" + str(item['count']) + ") " + item['name'],
+            'name': name,
             'latest': item['latest'],
-            'passed': int(item['passed'] / 24),
+            'passed': passed,
             'oldest': item['oldest'],
-            'lost': int(item['lost'] / 24),
+            'lost': lost
         })
+
+        if (threshold.get(key)):
+            th = str(threshold[key]['count']) + '/' + str(threshold[key]['threshold'])
+            if (passed > threshold[key]['threshold']):
+                print(th + name)
+            elif item['count'] < threshold[key]['count']:
+                print(th + name)
+
     # data['lost'] = sorted(stat, key=lambda x:x['lost'])
 
     lost_items = {}
