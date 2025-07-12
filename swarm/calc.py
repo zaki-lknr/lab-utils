@@ -16,6 +16,7 @@ def get_data():
 
 def statistics(checkins):
     data = {
+        'threshold': [],
         'lost': {},
         'interval': {},
         'statistics': {},
@@ -77,11 +78,18 @@ def statistics(checkins):
         })
 
         if (threshold.get(key)):
+            d = {
+                'count': str(item['count']) + '/' + str(threshold[key]['count']),
+                'interval': str(passed) + '/' + str(threshold[key]['threshold']),
+                'name': item['name']
+            }
             th = str(threshold[key]['count']) + '/' + str(threshold[key]['threshold'])
             if (passed > threshold[key]['threshold']):
-                print(th + name)
+                # print(th + name)
+                data['threshold'].append(d)
             elif item['count'] < threshold[key]['count']:
-                print(th + name)
+                data['threshold'].append(d)
+                # print(th + name)
 
     # data['lost'] = sorted(stat, key=lambda x:x['lost'])
 
