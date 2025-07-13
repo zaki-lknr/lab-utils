@@ -7,12 +7,12 @@ new_stored_data_file = 'logs/all-checkins-current.json'
 statistics_file = 'logs/stat.json'
 # print(files)
 
-def get_marge_data():
+def get_marge_data(base_file, add_file):
     all_checkins = []
-    with open(stored_data_file) as f:
+    with open(base_file) as f:
         all_checkins = json.load(f)
 
-    with open(new_data_file) as f:
+    with open(add_file) as f:
         d = json.load(f)
         checkins = d['response']['checkins']['items']
 
@@ -76,7 +76,7 @@ def statistics(checkins):
     return(data)
 
 if __name__ == "__main__":
-    checkins = get_marge_data()
+    checkins = get_marge_data(stored_data_file, new_data_file)
     data = statistics(checkins)
     with open(new_stored_data_file, mode='w') as f:
         f.write(json.dumps(checkins, ensure_ascii=False))
