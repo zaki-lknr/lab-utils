@@ -78,12 +78,15 @@ def statistics(checkins):
         })
 
         if (threshold.get(key)):
-            d = {
-                'count': str(item['count']) + '/' + str(threshold[key]['count']),
-                'interval': str(passed) + '/' + str(threshold[key]['threshold']),
-                'name': item['name']
-            }
-            th = str(threshold[key]['count']) + '/' + str(threshold[key]['threshold'])
+            # d = {
+            #     'count': str(item['count']) + '/' + str(threshold[key]['count']),
+            #     'interval': str(passed) + '/' + str(threshold[key]['threshold']),
+            #     'name': item['name']
+            # }
+            d = 'c:' + str(item['count']) + '(' + str(threshold[key]['count']) + ")/"
+            d += 'int:' + str(passed) + '(' + str(threshold[key]['threshold']) + ")/"
+            d += 'exp:' + str(lost) + '| ' + item['name']
+            # th = str(threshold[key]['count']) + '/' + str(threshold[key]['threshold'])
             if (passed > threshold[key]['threshold']):
                 # print(th + name)
                 data['threshold'].append(d)
