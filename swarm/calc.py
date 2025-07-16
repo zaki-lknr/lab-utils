@@ -2,10 +2,7 @@ import json
 import datetime
 
 data_dir = 'logs/'
-new_data_file = 'today.json'
-stored_data_file = 'all-checkins.json'
 new_stored_data_file = 'all-checkins-current.json'
-statistics_file = 'stat.json'
 threshold_file = 'threshold.json'
 # print(files)
 
@@ -117,11 +114,5 @@ def statistics(checkins):
 if __name__ == "__main__":
     checkins = get_data()
     data = statistics(checkins)
-
-    # with open(data_dir + new_stored_data_file, mode='w') as f:
-    #     f.write(json.dumps(checkins, ensure_ascii=False))
-
-    # with open(data_dir + statistics_file, mode='w') as f:
-    #     f.write(json.dumps(data, ensure_ascii=False))
 
     print(json.dumps(data, ensure_ascii=False, indent=2))
