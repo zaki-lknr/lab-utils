@@ -1,13 +1,13 @@
 import json
 import datetime
+import argparse
 
-data_dir = 'logs/'
-new_stored_data_file = 'all-checkins-current.json'
+stored_data_file = 'logs/all-checkins-current.json'
 threshold_file = 'threshold.json'
 # print(files)
 
-def get_data():
-    with open(data_dir + new_stored_data_file) as f:
+def get_data(src_file):
+    with open(src_file) as f:
         all_checkins = json.load(f)
     return all_checkins
 
@@ -112,7 +112,12 @@ def statistics(checkins):
     return(data)
 
 if __name__ == "__main__":
-    checkins = get_data()
+    p = argparse.ArgumentParser()
+    p.add_argument("--src", help="src file")
+    args = p.parse_args()
+
+    src_file = args.src or stored_data_file
+    checkins = get_data(src_file)
     data = statistics(checkins)
 
     print(json.dumps(data, ensure_ascii=False, indent=2))
