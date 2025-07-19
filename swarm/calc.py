@@ -23,12 +23,13 @@ def statistics(checkins):
     current_dt = datetime.datetime.now()
     limit_sec = int((current_dt + datetime.timedelta(days=-30)).timestamp())
 
+    # aggregate all checkin
     for checkin in checkins:
         checkin_id = checkin['venue']['id']
         checkin_time = datetime.datetime.fromtimestamp(checkin['createdAt'])
         item = data['statistics'].get(checkin_id)
         if (limit_sec > checkin['createdAt']):
-            # 期限切れ
+            # expired item
             if (not item):
                 expired_work.add(checkin['venue']['name'])
             continue
@@ -36,11 +37,13 @@ def statistics(checkins):
         diff = current_dt - checkin_time
         lost = int((checkin['createdAt'] - limit_sec) / 60 / 60)
         if item:
+            # update item
             item['count'] += 1
             item['oldest'] = str(checkin_time)
             item['lost'] = lost
             item['checkins'].append((checkin_time).strftime('%m/%d'))
         else:
+            # new item
             data['statistics'][checkin_id] = {
                 'count': 1,
                 'name': checkin['venue']['name'],
@@ -54,10 +57,8 @@ def statistics(checkins):
     data['statistics'] = dict(sorted(data['statistics'].items(), key=lambda x: x[1]['count'], reverse=True))
     data['expired'] = list(expired_work)
 
-    # 閾値データの読み込み
     with open(threshold_file) as f:
         threshold = json.load(f)
-    # print(threshold)
 
     # データサブセット
     stat = []
