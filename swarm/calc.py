@@ -7,12 +7,11 @@ threshold_file = 'threshold.json'
 statistics_file = 'logs/stat.json'
 # print(files)
 
-def get_data(src_file):
-    with open(src_file) as f:
-        all_checkins = json.load(f)
-    return all_checkins
+def statistics(src_file, thr_file):
 
-def statistics(checkins, thr_file):
+    with open(src_file) as f:
+        checkins = json.load(f)
+
     data = {
         'threshold': [],
         'lost': {},
@@ -123,8 +122,8 @@ if __name__ == "__main__":
     src_file = args.src or stored_data_file
     out_file = args.out or statistics_file
     thr_file = args.threshold or threshold_file
-    checkins = get_data(src_file)
-    data = statistics(checkins, thr_file)
+
+    data = statistics(src_file, thr_file)
 
     with open(out_file, mode='w') as f:
         f.write(json.dumps(data, ensure_ascii=False, indent=2))
