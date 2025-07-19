@@ -4,6 +4,7 @@ import argparse
 
 stored_data_file = 'logs/all-checkins-current.json'
 threshold_file = 'threshold.json'
+statistics_file = 'logs/stat.json'
 # print(files)
 
 def get_data(src_file):
@@ -115,10 +116,13 @@ def statistics(checkins):
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--src", help="src file")
+    p.add_argument("--out", help="output file")
     args = p.parse_args()
 
     src_file = args.src or stored_data_file
+    out_file = args.out or statistics_file
     checkins = get_data(src_file)
     data = statistics(checkins)
 
-    print(json.dumps(data, ensure_ascii=False, indent=2))
+    with open(out_file, mode='w') as f:
+        f.write(json.dumps(data, ensure_ascii=False, indent=2))
