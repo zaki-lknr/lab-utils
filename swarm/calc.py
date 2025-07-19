@@ -12,7 +12,7 @@ def get_data(src_file):
         all_checkins = json.load(f)
     return all_checkins
 
-def statistics(checkins):
+def statistics(checkins, thr_file):
     data = {
         'threshold': [],
         'lost': {},
@@ -58,7 +58,7 @@ def statistics(checkins):
     data['statistics'] = dict(sorted(data['statistics'].items(), key=lambda x: x[1]['count'], reverse=True))
     data['expired'] = list(expired_work)
 
-    with open(threshold_file) as f:
+    with open(thr_file) as f:
         threshold = json.load(f)
 
     # データサブセット
@@ -117,12 +117,14 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--src", help="src file")
     p.add_argument("--out", help="output file")
+    p.add_argument("--threshold", help="threshold configure file")
     args = p.parse_args()
 
     src_file = args.src or stored_data_file
     out_file = args.out or statistics_file
+    thr_file = args.threshold or threshold_file
     checkins = get_data(src_file)
-    data = statistics(checkins)
+    data = statistics(checkins, thr_file)
 
     with open(out_file, mode='w') as f:
         f.write(json.dumps(data, ensure_ascii=False, indent=2))
