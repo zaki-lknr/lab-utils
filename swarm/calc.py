@@ -60,6 +60,23 @@ def statistics(src_file, thr_file):
     with open(thr_file) as f:
         threshold = json.load(f)
 
+    # 閾値定義ファイル順に検査
+    for key, item in threshold.items():
+        if (d := data['statistics'].get(key)):
+            # print(d)
+            # st = {
+            #     'name': item['name'],
+            #     'count': str(d['count']) + '/' + str(item['count']),
+            #     'interval': str(int(d['passed'] / 24)) + '/' + str(item['threshold'])
+            # }
+            pass_h = int(d['passed'] / 24)
+            lost_h = int(d['lost'] / 24)
+
+            st = 'c:' + str(d['count']) + '(' + str(item['count']) + ')/'
+            st += 'int:' + str(pass_h) + '(' + str(item['threshold']) + ')/'
+            st += 'exp:' + str(lost_h) + '| ' + item['name']
+            print(st)
+
     # データサブセット
     stat = []
     for key, item in data['statistics'].items():
@@ -75,22 +92,22 @@ def statistics(src_file, thr_file):
             'lost': lost
         })
 
-        if (threshold.get(key)):
-            # d = {
-            #     'count': str(item['count']) + '/' + str(threshold[key]['count']),
-            #     'interval': str(passed) + '/' + str(threshold[key]['threshold']),
-            #     'name': item['name']
-            # }
-            d = 'c:' + str(item['count']) + '(' + str(threshold[key]['count']) + ")/"
-            d += 'int:' + str(passed) + '(' + str(threshold[key]['threshold']) + ")/"
-            d += 'exp:' + str(lost) + '| ' + item['name']
-            # th = str(threshold[key]['count']) + '/' + str(threshold[key]['threshold'])
-            if (passed > threshold[key]['threshold']):
-                # print(th + name)
-                data['threshold'].append(d)
-            elif item['count'] < threshold[key]['count']:
-                data['threshold'].append(d)
-                # print(th + name)
+        # if (threshold.get(key)):
+        #     # d = {
+        #     #     'count': str(item['count']) + '/' + str(threshold[key]['count']),
+        #     #     'interval': str(passed) + '/' + str(threshold[key]['threshold']),
+        #     #     'name': item['name']
+        #     # }
+        #     d = 'c:' + str(item['count']) + '(' + str(threshold[key]['count']) + ")/"
+        #     d += 'int:' + str(passed) + '(' + str(threshold[key]['threshold']) + ")/"
+        #     d += 'exp:' + str(lost) + '| ' + item['name']
+        #     # th = str(threshold[key]['count']) + '/' + str(threshold[key]['threshold'])
+        #     if (passed > threshold[key]['threshold']):
+        #         # print(th + name)
+        #         data['threshold'].append(d)
+        #     elif item['count'] < threshold[key]['count']:
+        #         data['threshold'].append(d)
+        #         # print(th + name)
 
     # data['lost'] = sorted(stat, key=lambda x:x['lost'])
 
