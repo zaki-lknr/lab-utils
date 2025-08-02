@@ -72,10 +72,11 @@ def statistics(src_file, thr_file):
             pass_h = int(d['passed'] / 24)
             lost_h = int(d['lost'] / 24)
 
-            st = 'c:' + str(d['count']) + '(' + str(item['count']) + ')/'
-            st += 'int:' + str(pass_h) + '(' + str(item['threshold']) + ')/'
-            st += 'exp:' + str(lost_h) + '| ' + item['name']
-            print(st)
+            if pass_h >= item['threshold'] or d['count'] <= item['count']:
+                st = 'c:' + str(d['count']) + '(' + str(item['count']) + ')/'
+                st += 'int:' + str(pass_h) + '(' + str(item['threshold']) + ')/'
+                st += 'exp:' + str(lost_h) + '| ' + item['name']
+                print(st)
 
     # データサブセット
     stat = []
