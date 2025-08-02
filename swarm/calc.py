@@ -76,7 +76,8 @@ def statistics(src_file, thr_file):
                 st = 'c:' + str(d['count']) + '(' + str(item['count']) + ')/'
                 st += 'int:' + str(pass_h) + '(' + str(item['threshold']) + ')/'
                 st += 'exp:' + str(lost_h) + '| ' + item['name']
-                print(st)
+                # print(st)
+                data['threshold'].append(st)
 
     # データサブセット
     stat = []
@@ -93,22 +94,6 @@ def statistics(src_file, thr_file):
             'lost': lost
         })
 
-        # if (threshold.get(key)):
-        #     # d = {
-        #     #     'count': str(item['count']) + '/' + str(threshold[key]['count']),
-        #     #     'interval': str(passed) + '/' + str(threshold[key]['threshold']),
-        #     #     'name': item['name']
-        #     # }
-        #     d = 'c:' + str(item['count']) + '(' + str(threshold[key]['count']) + ")/"
-        #     d += 'int:' + str(passed) + '(' + str(threshold[key]['threshold']) + ")/"
-        #     d += 'exp:' + str(lost) + '| ' + item['name']
-        #     # th = str(threshold[key]['count']) + '/' + str(threshold[key]['threshold'])
-        #     if (passed > threshold[key]['threshold']):
-        #         # print(th + name)
-        #         data['threshold'].append(d)
-        #     elif item['count'] < threshold[key]['count']:
-        #         data['threshold'].append(d)
-        #         # print(th + name)
 
     # data['lost'] = sorted(stat, key=lambda x:x['lost'])
 
