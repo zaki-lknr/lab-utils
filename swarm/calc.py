@@ -35,7 +35,7 @@ def statistics(src_file, thr_file):
             continue
 
         diff = current_dt - checkin_time
-        lost = int((checkin['createdAt'] - limit_sec) / 60 / 60)
+        lost = int((checkin['createdAt'] - limit_sec) / 60 / 60 / 24)
         if item:
             # update item
             item['count'] += 1
@@ -48,7 +48,7 @@ def statistics(src_file, thr_file):
                 'count': 1,
                 'name': checkin['venue']['name'],
                 'latest': str(checkin_time),
-                'passed': int(diff.total_seconds() / 60 / 60),
+                'passed': int(diff.total_seconds() / 60 / 60 / 24),
                 'oldest': str(checkin_time),
                 'lost': lost,
                 'checkins': [(checkin_time).strftime('%m/%d')],
@@ -69,8 +69,8 @@ def statistics(src_file, thr_file):
             #     'count': str(d['count']) + '/' + str(item['count']),
             #     'interval': str(int(d['passed'] / 24)) + '/' + str(item['threshold'])
             # }
-            pass_h = int(d['passed'] / 24)
-            lost_h = int(d['lost'] / 24)
+            pass_h = d['passed']
+            lost_h = d['lost']
 
             if pass_h >= item['threshold'] or d['count'] <= item['count']:
                 st = 'c:' + str(d['count']) + '(' + str(item['count']) + ')/'
@@ -82,8 +82,8 @@ def statistics(src_file, thr_file):
     # データサブセット
     stat = []
     for key, item in data['statistics'].items():
-        lost = int(item['lost'] / 24)
-        passed = int(item['passed'] / 24)
+        lost = item['lost']
+        passed = item['passed']
         name = "(" + str(item['count']) + "/" + "pass:" + str(passed) + "/" + "lost:" + str(lost) + ") " + item['name']
         stat.append({
             'count': item['count'],
