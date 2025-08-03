@@ -35,7 +35,7 @@ def statistics(src_file, thr_file):
             continue
 
         diff = current_dt - checkin_time
-        lost = int((checkin['createdAt'] - limit_sec) / 60 / 60)
+        lost = int((checkin['createdAt'] - limit_sec) / 60 / 60 / 24)
         if item:
             # update item
             item['count'] += 1
@@ -48,7 +48,7 @@ def statistics(src_file, thr_file):
                 'count': 1,
                 'name': checkin['venue']['name'],
                 'latest': str(checkin_time),
-                'passed': int(diff.total_seconds() / 60 / 60),
+                'passed': int(diff.total_seconds() / 60 / 60 / 24),
                 'oldest': str(checkin_time),
                 'lost': lost,
                 'checkins': [(checkin_time).strftime('%m/%d')],
@@ -60,11 +60,34 @@ def statistics(src_file, thr_file):
     with open(thr_file) as f:
         threshold = json.load(f)
 
+    # 閾値定義ファイル順に検査
+    for key, item in threshold.items():
+        if (d := data['statistics'].get(key)):
+            # print(d)
+            # st = {
+            #     'name': item['name'],
+            #     'count': str(d['count']) + '/' + str(item['count']),
+            #     'interval': str(int(d['passed'] / 24)) + '/' + str(item['threshold'])
+            # }
+            pass_h = d['passed']
+            lost_h = d['lost']
+
+            if pass_h >= item['threshold'] or d['count'] <= item['count']:
+                st = 'c:{: >2}({: >2})/'.format(d['count'], item['count'])
+                st += 'int:{: >2}({: >2})/'.format(pass_h, item['threshold'])
+                st += 'exp:{: >2}'.format(lost_h)
+                st += '|'
+                if (pass_h > item['threshold'] or d['count'] < item['count']):
+                    st += '*'
+                st += ' ' + item['name']
+                # print(st)
+                data['threshold'].append(st)
+
     # データサブセット
     stat = []
     for key, item in data['statistics'].items():
-        lost = int(item['lost'] / 24)
-        passed = int(item['passed'] / 24)
+        lost = item['lost']
+        passed = item['passed']
         name = "(" + str(item['count']) + "/" + "pass:" + str(passed) + "/" + "lost:" + str(lost) + ") " + item['name']
         stat.append({
             'count': item['count'],
@@ -75,22 +98,6 @@ def statistics(src_file, thr_file):
             'lost': lost
         })
 
-        if (threshold.get(key)):
-            # d = {
-            #     'count': str(item['count']) + '/' + str(threshold[key]['count']),
-            #     'interval': str(passed) + '/' + str(threshold[key]['threshold']),
-            #     'name': item['name']
-            # }
-            d = 'c:' + str(item['count']) + '(' + str(threshold[key]['count']) + ")/"
-            d += 'int:' + str(passed) + '(' + str(threshold[key]['threshold']) + ")/"
-            d += 'exp:' + str(lost) + '| ' + item['name']
-            # th = str(threshold[key]['count']) + '/' + str(threshold[key]['threshold'])
-            if (passed > threshold[key]['threshold']):
-                # print(th + name)
-                data['threshold'].append(d)
-            elif item['count'] < threshold[key]['count']:
-                data['threshold'].append(d)
-                # print(th + name)
 
     # data['lost'] = sorted(stat, key=lambda x:x['lost'])
 
