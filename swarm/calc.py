@@ -73,9 +73,10 @@ def statistics(src_file, thr_file):
             lost_h = d['lost']
 
             if pass_h >= item['threshold'] or d['count'] <= item['count']:
-                st = 'c:' + str(d['count']) + '(' + str(item['count']) + ')/'
-                st += 'int:' + str(pass_h) + '(' + str(item['threshold']) + ')/'
-                st += 'exp:' + str(lost_h) + '| ' + item['name']
+                st = 'c:{: >2}({: >2})/'.format(d['count'], item['count'])
+                st += 'int:{: >2}({: >2})/'.format(pass_h, item['threshold'])
+                st += 'exp:{: >2}'.format(lost_h)
+                st += '| ' + item['name']
                 # print(st)
                 data['threshold'].append(st)
 
