@@ -76,7 +76,10 @@ def statistics(src_file, thr_file):
                 st = 'c:{: >2}({: >2})/'.format(d['count'], item['count'])
                 st += 'int:{: >2}({: >2})/'.format(pass_h, item['threshold'])
                 st += 'exp:{: >2}'.format(lost_h)
-                st += '| ' + item['name']
+                st += '|'
+                if (pass_h > item['threshold'] or d['count'] < item['count']):
+                    st += '*'
+                st += ' ' + item['name']
                 # print(st)
                 data['threshold'].append(st)
 
