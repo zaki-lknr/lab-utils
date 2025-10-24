@@ -28,10 +28,6 @@ def get_marge_data(base_file, add_file):
     #     z = datetime.datetime.fromtimestamp(c['createdAt'])
     #     zz = c['createdAt']
 
-    # print(type(z))
-    # print(zz)
-    # print(str(z))
-    # print(json.dumps(all_checkins, ensure_ascii=False))
     return(all_checkins)
 
 if __name__ == "__main__":
