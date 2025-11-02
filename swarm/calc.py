@@ -52,6 +52,7 @@ def statistics(src_file, thr_file):
                 'oldest': str(checkin_time),
                 'lost': lost,
                 'checkins': [(checkin_time).strftime('%m/%d')],
+                'mayor': checkin['isMayor'],
             }
 
     data['statistics'] = dict(sorted(data['statistics'].items(), key=lambda x: x[1]['count'], reverse=True))
