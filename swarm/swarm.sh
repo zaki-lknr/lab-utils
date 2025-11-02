@@ -11,6 +11,8 @@ today_log=${devdir}/logs/user-checkin-${mmdd}.json
 all_log=${workdir}/logs/all-checkins-${yyyymmdd}.json
 all_yesterday=${workdir}/logs/all-checkins-${yyyymmdd_yesterday}.json
 
+threshold_file=${devdir}/threshold.json
+
 ${devdir}/get-user-checkins.sh \
     > ${today_log}
 
@@ -22,11 +24,11 @@ python ${workdir}/marge-log.py \
 python ${workdir}/calc.py \
     --src ${all_log} \
     --out ${workdir}/logs/stat${mmdd}.json \
-    --threshold ${workdir}/threshold.json
+    --threshold ${threshold_file}
 
 python ${workdir}/count.py \
     --stat ${workdir}/logs/stat${mmdd}.json \
-    --threshold ${workdir}/threshold.json \
+    --threshold ${threshold_file} \
     --out ${workdir}/logs/stat${mmdd}.csv
 
 #TODO: 変数定義のバラツキを修正する
