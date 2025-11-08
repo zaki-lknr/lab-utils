@@ -53,6 +53,7 @@ def statistics(src_file, thr_file):
                 'lost': lost,
                 'checkins': [(checkin_time).strftime('%m/%d')],
                 'mayor': checkin['isMayor'],
+                #todo: このコードだと最終チェックイン時のメイヤー状態しかわからない(メイヤー喪失後チェックインしていない場合は状態が更新されない)
             }
 
     data['statistics'] = dict(sorted(data['statistics'].items(), key=lambda x: x[1]['count'], reverse=True))

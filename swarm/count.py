@@ -25,9 +25,10 @@ def statistics(stat_file, thr_file):
             latest = d.strftime('%Y/%m/%d')
             d = datetime.datetime.strptime(checkin_stat['oldest'], '%Y-%m-%d %H:%M:%S')
             oldest = d.strftime('%Y/%m/%d')
-            result.append("{},{},{},{}".format(name, count, latest, oldest))
+            mayor = '' if (checkin_stat['mayor']) else 'x'
+            result.append("{},{},{},{},{}".format(name, count, latest, oldest, mayor))
         else:
-            result.append("{},{},{},{}".format(name, "", "", ""))
+            result.append("{},{},{},{},{}".format(name, "", "", "", ""))
     return result
 
 if __name__ == "__main__":
