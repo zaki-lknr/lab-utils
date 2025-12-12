@@ -18,6 +18,7 @@ def statistics(stat_file, thr_file):
     for venue_id, threshold_info in threshold.items():
         # thresholdファイルの項目順に検査
         name = threshold_info['name']
+        count_threshold = threshold_info['count']
         checkin_stat = stats['statistics'].get(venue_id)
         if checkin_stat:
             count = checkin_stat['count']
@@ -26,9 +27,9 @@ def statistics(stat_file, thr_file):
             d = datetime.datetime.strptime(checkin_stat['oldest'], '%Y-%m-%d %H:%M:%S')
             oldest = d.strftime('%Y/%m/%d')
             mayor = '' if (checkin_stat['mayor']) else 'x'
-            result.append("{},{},{},{},{}".format(name, count, latest, oldest, mayor))
+            result.append("{},{},{},{},{},{}".format(name, count, count_threshold, latest, oldest, mayor))
         else:
-            result.append("{},{},{},{},{}".format(name, "", "", "", ""))
+            result.append("{},{},{},{},{},{}".format(name, "", count_threshold, "", "", ""))
     return result
 
 if __name__ == "__main__":
