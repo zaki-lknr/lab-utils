@@ -19,17 +19,19 @@ def statistics(stat_file, thr_file):
         # thresholdファイルの項目順に検査
         name = threshold_info['name']
         count_threshold = threshold_info['count']
+        interval_threshold = threshold_info['threshold']
         checkin_stat = stats['statistics'].get(venue_id)
         if checkin_stat:
             count = checkin_stat['count']
+            interval = checkin_stat['passed']
             d = datetime.datetime.strptime(checkin_stat['latest'], '%Y-%m-%d %H:%M:%S')
             latest = d.strftime('%Y/%m/%d')
             d = datetime.datetime.strptime(checkin_stat['oldest'], '%Y-%m-%d %H:%M:%S')
             oldest = d.strftime('%Y/%m/%d')
             mayor = '' if (checkin_stat['mayor']) else 'x'
-            result.append("{},{},{},{},{},{}".format(name, count, count_threshold, latest, oldest, mayor))
+            result.append("{},{},{},{},{},{},{},{}".format(name, count, count_threshold, latest, interval, interval_threshold, oldest, mayor))
         else:
-            result.append("{},{},{},{},{},{}".format(name, "", count_threshold, "", "", ""))
+            result.append("{},{},{},{},{},{},{},{}".format(name, "", count_threshold, "", "", interval_threshold, "", ""))
     return result
 
 if __name__ == "__main__":
