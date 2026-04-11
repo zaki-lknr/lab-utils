@@ -5,6 +5,7 @@ import argparse
 threshold_file = 'threshold.json'
 statistics_file = 'logs/stat.json'
 result_file = 'result.log'
+today_file = ''
 
 def statistics(stat_file, thr_file):
     result = []
@@ -34,18 +35,36 @@ def statistics(stat_file, thr_file):
             result.append("{},{},{},{},{},{},{},{}".format(name, "", "", count_threshold, "", "", interval_threshold, ""))
     return result
 
+def get_today_count(checkins_list):
+    count = 0
+    with open(checkins_list) as f:
+        d = json.load(f)
+        checkin = checkins = d['response']['checkins']['items']
+
+        for checkin in checkins:
+            checkin_datetime = datetime.datetime.fromtimestamp(checkin['createdAt'])
+            today_datetime = datetime.datetime.now()
+            if (checkin_datetime.date() == today_datetime.date()):
+                count += 1
+
+    return count
+
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--stat", help="stat file")
     p.add_argument("--threshold", help="threshold configure file")
     p.add_argument("--out", help="output file")
+    p.add_argument("--today", help="today checkins list file")
     args = p.parse_args()
 
     stat_file = args.stat or statistics_file
     thr_file = args.threshold or threshold_file
     out_file = args.out or result_file
+    today_file = args.today or today_file
 
     r = statistics(stat_file, thr_file)
+    count = get_today_count(today_file)
 
     with open(out_file, mode='w') as f:
         f.write("\n".join(r))
+        f.write("\n\n" + str(count) + "\n")

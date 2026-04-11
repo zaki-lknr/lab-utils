@@ -27,6 +27,7 @@ python ${workdir}/calc.py \
     --threshold ${threshold_file}
 
 python ${workdir}/count.py \
+    --today ${today_log} \
     --stat ${workdir}/logs/stat${mmdd}.json \
     --threshold ${threshold_file} \
     --out ${workdir}/logs/stat${mmdd}.csv
