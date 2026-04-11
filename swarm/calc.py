@@ -31,7 +31,8 @@ def statistics(src_file, thr_file):
         if (limit_sec > checkin['createdAt']):
             # expired item
             if (not item):
-                expired_work.add(checkin['venue']['name'])
+                # expired_work.add(checkin['venue']['name'])
+                expired_work.add(checkin['venue']['id'] + " / " + checkin['venue']['name'])
             continue
 
         diff = current_dt - checkin_time
