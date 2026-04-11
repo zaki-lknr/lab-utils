@@ -29,9 +29,9 @@ def statistics(stat_file, thr_file):
             d = datetime.datetime.strptime(checkin_stat['oldest'], '%Y-%m-%d %H:%M:%S')
             oldest = d.strftime('%Y/%m/%d')
             mayor = '' if (checkin_stat['mayor']) else 'x'
-            result.append("{},{},{},{},{},{},{},{}".format(name, count, count_threshold, latest, interval, interval_threshold, oldest, mayor))
+            result.append("{},{},{},{},{},{},{},{}".format(name, mayor, count, count_threshold, latest, interval, interval_threshold, oldest))
         else:
-            result.append("{},{},{},{},{},{},{},{}".format(name, "", count_threshold, "", "", interval_threshold, "", ""))
+            result.append("{},{},{},{},{},{},{},{}".format(name, "", "", count_threshold, "", "", interval_threshold, ""))
     return result
 
 if __name__ == "__main__":
