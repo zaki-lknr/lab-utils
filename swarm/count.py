@@ -40,10 +40,10 @@ def get_today_count(checkins_list):
     with open(checkins_list) as f:
         d = json.load(f)
         checkin = checkins = d['response']['checkins']['items']
+        today_datetime = datetime.datetime.now()
 
         for checkin in checkins:
             checkin_datetime = datetime.datetime.fromtimestamp(checkin['createdAt'])
-            today_datetime = datetime.datetime.now()
             if (checkin_datetime.date() == today_datetime.date()):
                 count += 1
 
