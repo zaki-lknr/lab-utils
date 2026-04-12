@@ -35,16 +35,30 @@ def statistics(stat_file, thr_file):
             result.append("{},{},{},{},{},{},{},{}".format(name, "", "", count_threshold, "", "", interval_threshold, ""))
     return result
 
-def get_today_count(checkins_list):
+def get_today_count(checkins_list, today_datetime):
     count = 0
     with open(checkins_list) as f:
         d = json.load(f)
         checkin = checkins = d['response']['checkins']['items']
-        today_datetime = datetime.datetime.now()
 
         for checkin in checkins:
             checkin_datetime = datetime.datetime.fromtimestamp(checkin['createdAt'])
             if (checkin_datetime.date() == today_datetime.date()):
+                count += 1
+
+    return count
+
+def get_24h_count(checkins_list, today_datetime):
+    count = 0
+
+    with open(checkins_list) as f:
+        d = json.load(f)
+        checkin = checkins = d['response']['checkins']['items']
+        yesterday = today_datetime + datetime.timedelta(days=-1)
+
+        for checkin in checkins:
+            checkin_datetime = datetime.datetime.fromtimestamp(checkin['createdAt'])
+            if (checkin_datetime > yesterday):
                 count += 1
 
     return count
@@ -63,8 +77,14 @@ if __name__ == "__main__":
     today_file = args.today or today_file
 
     r = statistics(stat_file, thr_file)
-    count = get_today_count(today_file)
+
+    today_datetime = datetime.datetime.now()
+    count = get_today_count(today_file, today_datetime)
+    count24h = get_24h_count(today_file, today_datetime)
 
     with open(out_file, mode='w') as f:
         f.write("\n".join(r))
-        f.write("\n\n" + str(count) + "\n")
+        f.write("\n\n")
+        f.write("today: " + str(count) + "\n")
+        f.write("24h: " + str(count24h) + "\n")
+        f.write("modified: " + str(today_datetime) + "\n")
