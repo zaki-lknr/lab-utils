@@ -23,8 +23,16 @@ def statistics(src_file, thr_file):
     current_dt = datetime.datetime.now()
     limit_sec = int((current_dt + datetime.timedelta(days=-30)).timestamp())
 
+    # 1000カウントチェック用
+    total_checkins = 0
+    count1000_val = 1
+
     # aggregate all checkin
     for checkin in checkins:
+        total_checkins += 1
+        if (total_checkins > 1000):
+            # トータル1000件超えのカウントを無視する値
+            count1000_val = 0
         checkin_id = checkin['venue']['id']
         checkin_time = datetime.datetime.fromtimestamp(checkin['createdAt'])
         item = data['statistics'].get(checkin_id)
@@ -43,6 +51,7 @@ def statistics(src_file, thr_file):
             item['oldest'] = str(checkin_time)
             item['lost'] = lost
             item['checkins'].append((checkin_time).strftime('%m/%d'))
+            item['count1000'] += count1000_val
         else:
             # new item
             data['statistics'][checkin_id] = {
@@ -55,6 +64,7 @@ def statistics(src_file, thr_file):
                 'checkins': [(checkin_time).strftime('%m/%d')],
                 'mayor': checkin['isMayor'],
                 #todo: このコードだと最終チェックイン時のメイヤー状態しかわからない(メイヤー喪失後チェックインしていない場合は状態が更新されない)
+                'count1000': count1000_val
             }
 
     data['statistics'] = dict(sorted(data['statistics'].items(), key=lambda x: x[1]['count'], reverse=True))
