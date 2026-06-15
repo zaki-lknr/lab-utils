@@ -7,7 +7,7 @@ mmdd=$(date +%m%d)
 # workdir=
 # devdir=
 
-today_log=${devdir}/logs/user-checkin-${mmdd}.json
+today_log=${devdir}/logs/user-checkin-${yyyymmdd}.json
 all_log=${workdir}/logs/all-checkins-${yyyymmdd}.json
 all_yesterday=${workdir}/logs/all-checkins-${yyyymmdd_yesterday}.json
 
