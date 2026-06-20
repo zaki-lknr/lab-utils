@@ -1,0 +1,26 @@
+---
+- name: upgrade k3s cluster
+  hosts: all
+  # hosts: localhost
+  gather_facts: false
+
+  vars:
+    # https://github.com/k3s-io/k3s/releases/tag/v1.35.5%2Bk3s1
+    k3s_target_version: v1.35.5+k3s1
+    # arch: amd64
+    arch: arm64
+    # bin_path: /usr/local/bin/k3s
+    bin_path: /tmp/k3s
+
+  tasks:
+  - name: download k3s binary
+    ansible.builtin.get_url:
+      url: "https://github.com/k3s-io/k3s/releases/download/{{ k3s_target_version }}/k3s-{{ arch }}"
+      # url: https://github.com/k3s-io/k3s/releases/download/v1.34.8%2Bk3s1/k3s
+      # https://github.com/k3s-io/k3s/releases/download/v1.35.5%2Bk3s1/k3s
+      dest: "{{ bin_path }}"
+      owner: root
+      group: root
+      mode: "0755"
+      force: true
+    become: true
