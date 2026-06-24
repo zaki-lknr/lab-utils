@@ -1,0 +1,19 @@
+[tools]
+python = "3.14.2"
+uv = "0.10.11"
+
+[settings]
+python.uv_venv_auto = true
+
+[env]
+PROJECT_NAME = "{{ config_root | basename }}"
+_.python.venv = { path = ".venv", create = true }
+ANSIBLE_COLLECTIONS_PATH = "{{ config_root }}/.ansible"
+
+[tasks.install]
+description = "install prerequisites"
+alias = "i"
+run = """
+uv pip install -r requirements.txt
+"""
+# ansible-galaxy collection install -r requirements.yml
