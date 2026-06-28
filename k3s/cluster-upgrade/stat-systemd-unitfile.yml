@@ -1,0 +1,15 @@
+---
+- name: k3s systemd unitfile check
+  hosts: all
+  # hosts: localhost
+  gather_facts: false
+
+  tasks:
+  - name: exist check k3s.service
+    ansible.builtin.stat:
+      path: /etc/systemd/system/k3s.service
+    register: stat
+
+  - name: print exist check result
+    debug:
+      msg: "{{ stat.stat.exists }}"
