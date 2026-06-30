@@ -13,3 +13,12 @@
   - name: print exist check result
     debug:
       msg: "{{ stat.stat.exists }}"
+
+  - name: set path
+    set_fact:
+      unit_name: "{{ stat.stat.exists |
+                    ternary('k3s', 'k3s-agent') }}"
+
+  - name: print service name
+    debug:
+      msg: "{{ unit_name }}"
