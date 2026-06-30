@@ -8,16 +8,24 @@
   - name: exist check k3s.service
     ansible.builtin.stat:
       path: /etc/systemd/system/k3s.service
-    register: stat
+    register: server
+
+  - name: exist check k3s-agent.service
+    ansible.builtin.stat:
+      path: /etc/systemd/system/k3s-agent.service
+    register: agent
 
   - name: print exist check result
     debug:
-      msg: "{{ stat.stat.exists }}"
+      msg:
+      - "{{ server.stat.exists }}"
+      - "{{ agent.stat.exists }}"
 
   - name: set path
     set_fact:
-      unit_name: "{{ stat.stat.exists |
-                    ternary('k3s', 'k3s-agent') }}"
+      unit_name: "{{ server.stat.exists |
+                      ternary('k3s', agent.stat.exists |
+                        ternary('k3s-agent', none) ) }}"
 
   - name: print service name
     debug:
