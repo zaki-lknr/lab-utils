@@ -62,8 +62,7 @@ def statistics(src_file, thr_file):
                 'oldest': str(checkin_time),
                 'lost': lost,
                 'checkins': [(checkin_time).strftime('%m/%d')],
-                'mayor': checkin['isMayor'],
-                #todo: このコードだと最終チェックイン時のメイヤー状態しかわからない(メイヤー喪失後チェックインしていない場合は状態が更新されない)
+                'mayor': checkin['isMayor'],  #todo: このコードだと最終チェックイン時のメイヤー状態しかわからない(メイヤー喪失後チェックインしていない場合は状態が更新されない)
                 'count1000': count1000_val
             }
 
