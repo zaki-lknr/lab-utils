@@ -22,6 +22,10 @@ def statistics(src_file, thr_file):
     expired_work = set()
     current_dt = datetime.datetime.now()
     limit_sec = int((current_dt + datetime.timedelta(days=-30)).timestamp())
+    current_mmdd = current_dt.strftime('%m/%d')
+    yesterday_mmdd = (current_dt - datetime.timedelta(days=1)).strftime('%m/%d')
+    # print(current_mmdd)
+    # print(yesterday_mmdd)
 
     # 1000カウントチェック用
     total_checkins = 0
@@ -35,6 +39,7 @@ def statistics(src_file, thr_file):
             count1000_val = 0
         checkin_id = checkin['venue']['id']
         checkin_time = datetime.datetime.fromtimestamp(checkin['createdAt'])
+        checkin_mmdd = (checkin_time).strftime('%m/%d')
         item = data['statistics'].get(checkin_id)
         if (limit_sec > checkin['createdAt']):
             # expired item
@@ -50,7 +55,7 @@ def statistics(src_file, thr_file):
             item['count'] += 1
             item['oldest'] = str(checkin_time)
             item['lost'] = lost
-            item['checkins'].append((checkin_time).strftime('%m/%d'))
+            item['checkins'].append(checkin_mmdd)
             item['count1000'] += count1000_val
         else:
             # new item
@@ -61,9 +66,11 @@ def statistics(src_file, thr_file):
                 'passed': int(diff.total_seconds() / 60 / 60 / 24),
                 'oldest': str(checkin_time),
                 'lost': lost,
-                'checkins': [(checkin_time).strftime('%m/%d')],
+                'checkins': [checkin_mmdd],
                 'mayor': checkin['isMayor'],  #todo: このコードだと最終チェックイン時のメイヤー状態しかわからない(メイヤー喪失後チェックインしていない場合は状態が更新されない)
-                'count1000': count1000_val
+                'count1000': count1000_val,
+                # 連続チェックイン(当日or前日ならカウント開始)
+                'continue': 1 if (checkin_mmdd == current_mmdd or checkin_mmdd == yesterday_mmdd) else 0
             }
 
     data['statistics'] = dict(sorted(data['statistics'].items(), key=lambda x: x[1]['count'], reverse=True))
