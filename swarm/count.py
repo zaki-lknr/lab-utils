@@ -32,9 +32,9 @@ def statistics(stat_file, thr_file):
             mayor = '' if (checkin_stat['mayor']) else 'x'
             count1000 = checkin_stat['count1000']
             checkin_continue = checkin_stat['continue']
-            result.append("{},{},{},{},{},{},{},{},{},{}".format(name, mayor, count, count1000, count_threshold, checkin_continue, latest, interval, interval_threshold, oldest))
+            result.append("{},{},{},{},{},{},{},{},{},{}".format(name, mayor, count, count1000, count_threshold, latest, interval, interval_threshold, oldest, checkin_continue))
         else:
-            result.append("{},{},{},{},{},{},{},{},{},{}".format(name, "", "", "", count_threshold, "", "", "", interval_threshold, ""))
+            result.append("{},{},{},{},{},{},{},{},{},{}".format(name, "", "", "", count_threshold, "", "", interval_threshold, "", ""))
     return result
 
 def get_today_count(checkins_list, today_datetime):
