@@ -50,14 +50,27 @@ def statistics(src_file, thr_file):
 
         diff = current_dt - checkin_time
         lost = int((checkin['createdAt'] - limit_sec) / 60 / 60 / 24)
+        # print(next_checkin_day)
         if item:
+            last_log_day = item['checkins'][-1]
+            # 今回のチェックインの翌日の日付(連続チェックイン比較用)
+            yesterday_of_checkin_day = (checkin_time + datetime.timedelta(days=1)).strftime('%m/%d')
             # update item
             item['count'] += 1
             item['oldest'] = str(checkin_time)
             item['lost'] = lost
             item['checkins'].append(checkin_mmdd)
             item['count1000'] += count1000_val
+            if (yesterday_of_checkin_day == last_log_day):
+                item['continue'] += 1 if (item['continue_flag']) else 0
+                # item['continue'] = 0
+            else:
+                item['continue_flag'] = False
         else:
+            if (checkin_mmdd == current_mmdd or checkin_mmdd == yesterday_mmdd):
+                continue_flag = True
+            else:
+                continue_flag = False
             # new item
             data['statistics'][checkin_id] = {
                 'count': 1,
@@ -70,7 +83,8 @@ def statistics(src_file, thr_file):
                 'mayor': checkin['isMayor'],  #todo: このコードだと最終チェックイン時のメイヤー状態しかわからない(メイヤー喪失後チェックインしていない場合は状態が更新されない)
                 'count1000': count1000_val,
                 # 連続チェックイン(当日or前日ならカウント開始)
-                'continue': 1 if (checkin_mmdd == current_mmdd or checkin_mmdd == yesterday_mmdd) else 0
+                'continue': 1 if continue_flag else 0,
+                'continue_flag': continue_flag
             }
 
     data['statistics'] = dict(sorted(data['statistics'].items(), key=lambda x: x[1]['count'], reverse=True))
