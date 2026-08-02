@@ -2,19 +2,34 @@
 - name: upgrade k3s cluster
   hosts: all
   # hosts: localhost
-  gather_facts: false
+  gather_facts: true
+  gather_subset:
+  - architecture
 
   vars:
     # https://github.com/k3s-io/k3s/releases/tag/v1.35.5%2Bk3s1
-    k3s_target_version: v1.35.5+k3s1
+    k3s_target_version: v1.35.6+k3s1
     # arch: amd64
-    arch: arm64
+    # arch: arm64
     bin_path: /usr/local/bin/k3s
     # bin_path: /tmp/k3s
     # service_name: k3s.service        # for server
     # service_name: k3s-agent.service  # for agent
+    arch_set:
+      amd64: amd64
+      x86_64: amd64
+      arm64: arm64
+      aarch64: arm64
+      s390x: s390x
 
   tasks:
+  - name: set architecture suffix
+    set_fact:
+      arch_suffix: "{{ '' if arch == 'amd64' else '-armhf' if arch == 'arm' else '-' ~ arch }}"
+    vars:
+      arch: "{{ arch_set.get(ansible_facts.architecture, 'arm64' if ansible_facts.architecture.startswith('arm') else 'amd64')}}"
+      # 該当なしはとりあえずamd64とする (本家はunsupported architecutreとしてエラー)
+
   - name: exist check k3s.service
     ansible.builtin.stat:
       path: /etc/systemd/system/k3s.service
@@ -33,7 +48,7 @@
 
   - name: download k3s binary
     ansible.builtin.get_url:
-      url: "https://github.com/k3s-io/k3s/releases/download/{{ k3s_target_version }}/k3s-{{ arch }}"
+      url: "https://github.com/k3s-io/k3s/releases/download/{{ k3s_target_version }}/k3s{{ arch_suffix }}"
       # url: https://github.com/k3s-io/k3s/releases/download/v1.34.8%2Bk3s1/k3s
       # https://github.com/k3s-io/k3s/releases/download/v1.35.5%2Bk3s1/k3s
       dest: "{{ bin_path }}"
