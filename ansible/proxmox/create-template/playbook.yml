@@ -1,0 +1,72 @@
+---
+- name: create template with cloud image
+  hosts: all
+  gather_facts: false
+
+  environment:
+    PROXMOX_HOST: "{{ lookup('env', 'PROXMOX_HOST') }}"
+    PROXMOX_USER: "{{ lookup('env', 'PROXMOX_USER') }}"
+    PROXMOX_PASSWORD: "{{ lookup('env', 'PROXMOX_PASSWORD') }}"
+    PROXMOX_VALIDATE_CERTS: false
+
+  tasks:
+  - name: include vars
+    ansible.builtin.include_vars: vars.yaml
+
+  - name: download iso file
+    community.proxmox.proxmox_template:
+      node: "{{ pve_node }}"
+      url: "{{ iso_download_url }}"
+      storage: pecorino-dev
+      content_type: import
+      # force: true
+      timeout: 120
+
+  - name: create VM
+    community.proxmox.proxmox_kvm:
+      name: "{{ vm_name }}"
+      vmid: "{{ vm_id }}"
+      node: "{{ pve_node }}"
+      cpu: "{{ vm_cpu }}"
+      sockets: "{{ vm_sockets }}"
+      cores: "{{ vm_cores }}"
+      memory: "{{ vm_memory }}"
+      net:
+        net0: 'virtio,bridge=vmbr0'
+        # net1: 'virtio,bridge=vmbr1,firewall=1'
+      scsihw: virtio-scsi-pci
+      scsi:
+        scsi0: "local-lvm:0,import-from={{ image_storage }}:import/{{ iso_download_url | basename }}"
+        # size0: "{{ vm_disksize }}"
+      ide:
+        ide2: 'local-lvm:cloudinit'
+      boot: order=scsi0
+      serial:
+        serial0: socket
+      vga: serial0
+      # options
+      agent: enabled=1
+      # cloud-init
+      ciuser: "{{ username }}"
+      cipassword: "{{ password }}"
+      sshkeys: "{{ vm_ssh_key }}"
+      ipconfig:
+        ipconfig0: "{{ vm_ip0 }}"
+        ipconfig1: "{{ vm_ip1 | default(omit) }}"
+      nameservers: "{{ vm_dns }}"
+
+  - name: resize disk
+    community.proxmox.proxmox_disk:
+      vmid: "{{ vm_id }}"
+      disk: scsi0
+      size: "{{ vm_disksize }}"
+      state: resized
+
+  - name: sleep
+    ansible.builtin.pause:
+      seconds: 3
+
+  - name: VM convert to template
+    community.proxmox.proxmox_kvm:
+      vmid: "{{ vm_id }}"
+      state: template

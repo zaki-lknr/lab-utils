@@ -1,0 +1,23 @@
+---
+ansible_python_interpreter: /path/to/ansible/proxmox/.venv/bin/python
+
+### image params
+iso_download_url: https://cloud-images.ubuntu.com/resolute/current/resolute-server-cloudimg-amd64.img
+image_storage: pecorino-dev
+
+### VM params
+vm_id: 9999
+vm_name: ubuntu2604-template
+pve_node: pve01
+vm_cpu: x86-64-v3
+vm_sockets: 1
+vm_cores: 2
+vm_memory: 4096
+vm_disksize: 15G
+vm_ssh_key: fixme
+vm_dns:
+  - 192.168.0.1
+  - 8.8.8.8
+vm_ip0: ip=dhcp
+username: user01
+password: p@ssw0rd
