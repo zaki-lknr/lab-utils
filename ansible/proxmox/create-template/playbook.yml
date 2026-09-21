@@ -17,7 +17,7 @@
     community.proxmox.proxmox_template:
       node: "{{ pve_node }}"
       url: "{{ iso_download_url }}"
-      storage: pecorino-dev
+      storage: "{{ image_storage }}"
       content_type: import
       # force: true
       timeout: 120
